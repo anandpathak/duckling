@@ -20,6 +20,8 @@ import Duckling.Types
 import qualified Duckling.AmountOfMoney.ID.Rules as AmountOfMoney
 import qualified Duckling.Numeral.ID.Rules as Numeral
 import qualified Duckling.Ordinal.ID.Rules as Ordinal
+import qualified Duckling.Time.ID.Rules as Time
+import qualified Duckling.TimeGrain.ID.Rules as TimeGrain
 
 defaultRules :: Seal Dimension -> [Rule]
 defaultRules = langRules
@@ -40,8 +42,8 @@ langRules (Seal PhoneNumber) = []
 langRules (Seal Quantity) = []
 langRules (Seal RegexMatch) = []
 langRules (Seal Temperature) = []
-langRules (Seal Time) = []
-langRules (Seal TimeGrain) = []
+langRules (Seal Time) = Time.rules
+langRules (Seal TimeGrain) = TimeGrain.rules
 langRules (Seal Url) = []
 langRules (Seal Volume) = []
 langRules (Seal (CustomDimension dim)) = dimLangRules ID dim

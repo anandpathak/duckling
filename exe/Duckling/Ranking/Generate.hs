@@ -29,41 +29,11 @@ import Duckling.Ranking.Types
 import Duckling.Rules
 import Duckling.Testing.Types
 import qualified Duckling.Region as R
-import qualified Duckling.Time.AR.Corpus as ARTime
-import qualified Duckling.Time.BG.Corpus as BGTime
-import qualified Duckling.Time.CA.Corpus as CATime
-import qualified Duckling.Time.DA.Corpus as DATime
-import qualified Duckling.Time.DE.Corpus as DETime
-import qualified Duckling.Time.EL.Corpus as ELTime
 import qualified Duckling.Time.EN.Corpus as ENTime
 import qualified Duckling.Time.EN.CA.Corpus as EN_CATime
 import qualified Duckling.Time.EN.GB.Corpus as EN_GBTime
 import qualified Duckling.Time.EN.US.Corpus as EN_USTime
-import qualified Duckling.Time.ES.Corpus as ESTime
-import qualified Duckling.Time.FR.Corpus as FRTime
-import qualified Duckling.Time.GA.Corpus as GATime
-import qualified Duckling.Time.HR.Corpus as HRTime
-import qualified Duckling.Time.HE.Corpus as HETime
-import qualified Duckling.Time.HU.Corpus as HUTime
-import qualified Duckling.Time.IT.Corpus as ITTime
-import qualified Duckling.Time.JA.Corpus as JATime
-import qualified Duckling.Time.KO.Corpus as KOTime
-import qualified Duckling.Time.NB.Corpus as NBTime
-import qualified Duckling.Time.NL.Corpus as NLTime
-import qualified Duckling.Time.NL.BE.Corpus as NL_BETime
-import qualified Duckling.Time.PL.Corpus as PLTime
-import qualified Duckling.Time.PT.Corpus as PTTime
-import qualified Duckling.Time.RO.Corpus as ROTime
-import qualified Duckling.Time.RU.Corpus as RUTime
-import qualified Duckling.Time.SV.Corpus as SVTime
-import qualified Duckling.Time.TR.Corpus as TRTime
-import qualified Duckling.Time.UK.Corpus as UKTime
-import qualified Duckling.Time.VI.Corpus as VITime
-import qualified Duckling.Time.ZH.Corpus as ZHTime
-import qualified Duckling.Time.ZH.CN.Corpus as ZH_CNTime
-import qualified Duckling.Time.ZH.HK.Corpus as ZH_HKTime
-import qualified Duckling.Time.ZH.MO.Corpus as ZH_MOTime
-import qualified Duckling.Time.ZH.TW.Corpus as ZH_TWTime
+import qualified Duckling.Time.ID.Corpus as IDTime
 
 -- -----------------------------------------------------------------
 -- Main
@@ -181,71 +151,20 @@ getCorpus locale@(Locale lang (Just region)) =
 getDefaultCorpusForLang :: Lang -> Corpus
 getDefaultCorpusForLang = \case
   EN -> ENTime.defaultCorpus
-  NL -> NLTime.defaultCorpus
+  ID -> IDTime.corpus
   lang -> getCorpusForLang lang
 
 getCorpusForLang :: Lang -> Corpus
 getCorpusForLang = \case
-  AF -> (testContext, testOptions, [])
-  AR -> ARTime.corpus
-  BG -> BGTime.corpus
-  BN -> (testContext, testOptions, [])
-  CA -> CATime.corpus
-  CS -> (testContext, testOptions, [])
-  DA -> DATime.corpus
-  DE -> DETime.corpus
-  EL -> ELTime.corpus
   EN -> ENTime.corpus
-  ES -> ESTime.corpus
-  ET -> (testContext, testOptions, [])
-  FI -> (testContext, testOptions, [])
-  FA -> (testContext, testOptions, [])
-  FR -> FRTime.corpus
-  GA -> GATime.corpus
-  HR -> HRTime.corpus
-  HE -> HETime.corpus
-  HU -> HUTime.corpus
-  HI -> (testContext, testOptions, [])
-  ID -> (testContext, testOptions, [])
-  IS -> (testContext, testOptions, [])
-  IT -> ITTime.corpus
-  JA -> JATime.corpus
-  KA -> (testContext, testOptions, [])
-  KM -> (testContext, testOptions, [])
-  KN -> (testContext, testOptions, [])
-  KO -> KOTime.corpus
-  LO -> (testContext, testOptions, [])
-  ML -> (testContext, testOptions, [])
-  MN -> (testContext, testOptions, [])
-  MY -> (testContext, testOptions, [])
-  NB -> NBTime.corpus
-  NE -> (testContext, testOptions, [])
-  NL -> NLTime.corpus
-  PL -> PLTime.corpus
-  PT -> PTTime.corpus
-  RO -> ROTime.corpus
-  RU -> RUTime.corpus
-  SK -> (testContext, testOptions, [])
-  SV -> SVTime.corpus
-  SW -> (testContext, testOptions, [])
-  TA -> (testContext, testOptions, [])
-  TE -> (testContext, testOptions, [])
-  TH -> (testContext, testOptions, [])
-  TR -> TRTime.corpus
-  UK -> UKTime.corpus
-  VI -> VITime.corpus
-  ZH -> ZHTime.corpus
+  ID -> IDTime.corpus
+  _ -> (testContext, testOptions, [])  -- Unsupported languages return empty corpus
 
 getExamplesForLocale :: Lang -> Region -> [Example]
 getExamplesForLocale EN R.CA = EN_CATime.allExamples
 getExamplesForLocale EN GB = EN_GBTime.allExamples
 getExamplesForLocale EN US = EN_USTime.allExamples
-getExamplesForLocale NL BE = NL_BETime.allExamples
-getExamplesForLocale ZH CN = ZH_CNTime.allExamples
-getExamplesForLocale ZH HK = ZH_HKTime.allExamples
-getExamplesForLocale ZH MO = ZH_MOTime.allExamples
-getExamplesForLocale ZH TW = ZH_TWTime.allExamples
-getExamplesForLocale _ _   = []
+getExamplesForLocale _ _   = []  -- Only EN locales have examples, ID uses default corpus
 
 -- -----------------------------------------------------------------
 -- Source generators

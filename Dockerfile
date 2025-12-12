@@ -15,26 +15,47 @@ RUN mkdir /log
 
 WORKDIR /duckling
 
-ADD . .
-
 ENV LANG=C.UTF-8
 
-RUN stack setup
+# Copy only dependency files first for better caching
+# This allows stack setup to be cached if dependencies don't change
+COPY stack.yaml duckling.cabal ./
 
-ADD . .
+# Use BuildKit cache mounts to persist stack directory across builds
+# This caches the Hackage index (~200MB) and GHC downloads (~260MB)
+# The cache persists even when Docker layers are invalidated
+# Requires: DOCKER_BUILDKIT=1 docker build
+RUN --mount=type=cache,target=/root/.stack \
+    stack update || true
 
+# Run stack setup with --install-ghc to ensure GHC is installed
+# Uses the cached stack directory from the previous step
+# GHC and dependencies will be cached and reused across builds
+RUN --mount=type=cache,target=/root/.stack \
+    stack setup --install-ghc
+
+# Now copy all source code
+# This layer will be rebuilt when source code changes
+COPY . .
+
+# Build and install (GHC is already available from stack setup or system)
+# Uses cached stack directory for faster dependency resolution
 # NOTE:`stack build` will use as many cores as are available to build
 # in parallel. However, this can cause OOM issues as the linking step
 # in GHC can be expensive. If the build fails, try specifying the
 # '-j1' flag to force the build to run sequentially.
-RUN stack install --install-ghc
+RUN --mount=type=cache,target=/root/.stack \
+    stack install
 
 FROM debian:bullseye
 
-ENV LANG C.UTF-8
+ENV LANG=C.UTF-8
+ENV TZ=Asia/Jakarta
 
 RUN apt-get update -qq && \
-  apt-get install -qq -y libpcre3 libgmp10 --no-install-recommends && \
+  apt-get install -qq -y libpcre3 libgmp10 tzdata --no-install-recommends && \
+  ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+  echo $TZ > /etc/timezone && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

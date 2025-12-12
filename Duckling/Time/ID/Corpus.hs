@@ -1,0 +1,237 @@
+-- Copyright (c) 2016-present, Facebook, Inc.
+-- All rights reserved.
+--
+-- This source code is licensed under the BSD-style license found in the
+-- LICENSE file in the root directory of this source tree.
+
+
+{-# LANGUAGE OverloadedStrings #-}
+
+module Duckling.Time.ID.Corpus
+  ( corpus
+  , negativeCorpus
+  ) where
+
+import Data.String
+import Prelude
+
+import Duckling.Locale
+import Duckling.Resolve
+import Duckling.Time.Corpus
+import Duckling.Time.Types hiding (Month)
+import Duckling.TimeGrain.Types hiding (add)
+import Duckling.Testing.Types hiding (examples)
+
+context :: Context
+context = testContext {locale = makeLocale ID Nothing}
+
+corpus :: Corpus
+corpus = (context, testOptions, allExamples)
+
+negativeCorpus :: NegativeCorpus
+negativeCorpus = (context, testOptions, examples)
+  where
+    examples =
+      [ "satu hotel"
+      , "dua tiket"
+      , "tiga"
+      ]
+
+allExamples :: [Example]
+allExamples = concat
+  [ -- Relative time: sekarang, hari ini, besok, kemarin
+    examples (datetime (2013, 2, 12, 4, 30, 0) Second)
+             [ "sekarang"
+             , "skrg"
+             , "hari ini"
+             ]
+  , examples (datetime (2013, 2, 12, 0, 0, 0) Day)
+             [ "hari ini"
+             ]
+  , examples (datetime (2013, 2, 11, 0, 0, 0) Day)
+             [ "kemarin"
+             ]
+  , examples (datetime (2013, 2, 13, 0, 0, 0) Day)
+             [ "besok"
+             ]
+  , examples (datetime (2013, 2, 14, 0, 0, 0) Day)
+             [ "lusa"
+             ]
+  , examples (datetime (2013, 2, 10, 0, 0, 0) Day)
+             [ "kemarin lusa"
+             ]
+  
+  -- Days of week
+  , examples (datetime (2013, 2, 18, 0, 0, 0) Day)
+             [ "senin"
+             , "sen"
+             , "sen."
+             ]
+  , examples (datetime (2013, 2, 19, 0, 0, 0) Day)
+             [ "selasa"
+             , "sel"
+             , "sel."
+             ]
+  , examples (datetime (2013, 2, 13, 0, 0, 0) Day)
+             [ "rabu"
+             , "rab"
+             , "rab."
+             ]
+  , examples (datetime (2013, 2, 14, 0, 0, 0) Day)
+             [ "kamis"
+             , "kam"
+             , "kam."
+             ]
+  , examples (datetime (2013, 2, 15, 0, 0, 0) Day)
+             [ "jumat"
+             , "jum'at"
+             , "jum"
+             , "jum."
+             ]
+  , examples (datetime (2013, 2, 16, 0, 0, 0) Day)
+             [ "sabtu"
+             , "sab"
+             , "sab."
+             ]
+  , examples (datetime (2013, 2, 17, 0, 0, 0) Day)
+             [ "minggu"
+             , "ahad"
+             , "min"
+             , "min."
+             ]
+  
+  -- Date formats: dd/mm, dd-mm, dd.mm
+  , examples (datetime (2013, 2, 15, 0, 0, 0) Day)
+             [ "15/2"
+             , "15/02"
+             , "15 / 2"
+             , "15-2"
+             , "15-02"
+             , "15.2"
+             , "15.02"
+             ]
+  , examples (datetime (2013, 10, 31, 0, 0, 0) Day)
+             [ "31/10/2013"
+             , "31/10/13"
+             , "31-10-2013"
+             , "31-10-13"
+             , "31.10.2013"
+             , "31.10.13"
+             ]
+  
+  -- Date with month name
+  , examples (datetime (2013, 1, 15, 0, 0, 0) Day)
+             [ "15 januari"
+             , "15 jan"
+             , "15 januari 2013"
+             , "15 jan 2013"
+             ]
+  , examples (datetime (2013, 8, 17, 0, 0, 0) Day)
+             [ "17 agustus"
+             , "17 agu"
+             , "17 ags"
+             , "17 agustus 2013"
+             ]
+  , examples (datetime (2013, 12, 25, 0, 0, 0) Day)
+             [ "25 desember"
+             , "25 des"
+             , "25 desember 2013"
+             ]
+  
+  -- ISO format
+  , examples (datetime (2013, 10, 31, 0, 0, 0) Day)
+             [ "2013-10-31"
+             ]
+  
+  -- Time expressions
+  , examples (datetime (2013, 2, 12, 14, 30, 0) Minute)
+             [ "pukul 14:30"
+             , "pukul 14.30"
+             , "pk 14:30"
+             , "jam 14:30"
+             ]
+  , examples (datetime (2013, 2, 12, 14, 0, 0) Hour)
+             [ "pukul 14"
+             , "pk 14"
+             , "jam 14"
+             ]
+  , examples (datetime (2013, 2, 12, 2, 0, 0) Hour)
+             [ "jam 2 pagi"
+             , "pukul 2 pagi"
+             ]
+  , examples (datetime (2013, 2, 12, 14, 0, 0) Hour)
+             [ "jam 2 sore"
+             , "pukul 2 sore"
+             ]
+  
+  -- Relative cycles
+  , examples (datetime (2013, 2, 19, 0, 0, 0) Day)
+             [ "minggu depan"
+             ]
+  , examples (datetime (2013, 2, 5, 0, 0, 0) Day)
+             [ "minggu lalu"
+             ]
+  , examples (datetime (2013, 3, 1, 0, 0, 0) Day)
+             [ "bulan depan"
+             ]
+  , examples (datetime (2013, 1, 1, 0, 0, 0) Day)
+             [ "bulan lalu"
+             ]
+  
+  -- Holidays
+  , examples (datetimeHoliday (2013, 1, 1, 0, 0, 0) Day "Tahun Baru Masehi")
+             [ "tahun baru"
+             , "tahun baru masehi"
+             ]
+  , examples (datetimeHoliday (2013, 5, 1, 0, 0, 0) Day "Hari Buruh Internasional")
+             [ "hari buruh"
+             , "hari buruh internasional"
+             ]
+  , examples (datetimeHoliday (2013, 5, 20, 0, 0, 0) Day "Hari Kebangkitan Nasional")
+             [ "hari kebangkitan nasional"
+             ]
+  , examples (datetimeHoliday (2013, 6, 1, 0, 0, 0) Day "Hari Lahir Pancasila")
+             [ "hari lahir pancasila"
+             ]
+  , examples (datetimeHoliday (2013, 8, 17, 0, 0, 0) Day "Hari Proklamasi Kemerdekaan")
+             [ "hari kemerdekaan"
+             , "hari kemerdekaan ri"
+             , "17 agustusan"
+             ]
+  , examples (datetimeHoliday (2013, 10, 1, 0, 0, 0) Day "Hari Kesaktian Pancasila")
+             [ "hari kesaktian pancasila"
+             ]
+  , examples (datetimeHoliday (2013, 10, 28, 0, 0, 0) Day "Hari Sumpah Pemuda")
+             [ "hari sumpah pemuda"
+             ]
+  , examples (datetimeHoliday (2013, 11, 10, 0, 0, 0) Day "Hari Pahlawan")
+             [ "hari pahlawan"
+             ]
+  , examples (datetimeHoliday (2013, 12, 25, 0, 0, 0) Day "Hari Raya Natal")
+             [ "hari raya natal"
+             , "natal"
+             ]
+  , examples (datetimeHoliday (2013, 4, 21, 0, 0, 0) Day "Hari Kartini")
+             [ "hari kartini"
+             ]
+  , examples (datetimeHoliday (2013, 5, 2, 0, 0, 0) Day "Hari Pendidikan Nasional")
+             [ "hari pendidikan nasional"
+             , "hardiknas"
+             ]
+  , examples (datetimeHoliday (2013, 7, 23, 0, 0, 0) Day "Hari Anak Nasional")
+             [ "hari anak"
+             , "hari anak nasional"
+             ]
+  , examples (datetimeHoliday (2013, 10, 2, 0, 0, 0) Day "Hari Batik Nasional")
+             [ "hari batik"
+             , "hari batik nasional"
+             ]
+  , examples (datetimeHoliday (2013, 11, 25, 0, 0, 0) Day "Hari Guru Nasional")
+             [ "hari guru"
+             , "hari guru nasional"
+             ]
+  , examples (datetimeHoliday (2013, 12, 22, 0, 0, 0) Day "Hari Ibu")
+             [ "hari ibu"
+             ]
+  ]
+

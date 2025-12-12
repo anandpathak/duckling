@@ -142,7 +142,7 @@ parseHandler tzs = do
   where
     defaultLang = EN
     defaultLocale = makeLocale defaultLang Nothing
-    defaultTimeZone = "America/Los_Angeles"
+    defaultTimeZone = "Asia/Jakarta"
     defaultLatent = False
 
     parseDimension :: Text -> Maybe (Seal Dimension)
