@@ -17,10 +17,10 @@ If you've made changes to the code (like the Indonesian time parsing improvement
 
 ```bash
 # Build the image (this will take 10-30 minutes the first time)
-docker build -t duckling-id:latest .
+docker build -t duckling .
 
 # Or with a specific tag
-docker build -t duckling-id:v1.0 .
+docker build -t duckling:v1.0 .
 ```
 
 **What happens during build:**
@@ -38,10 +38,10 @@ docker build -t duckling-id:v1.0 .
 
 ```bash
 # Run the container
-docker run -p 8000:8000 duckling-id:latest
+docker run -p 8000:8000 duckling
 
 # Or run in detached mode (background)
-docker run -d -p 8000:8000 --name duckling duckling-id:latest
+docker run -d -p 8000:8000 --name duckling duckling
 
 # View logs
 docker logs duckling
@@ -71,13 +71,13 @@ See the [Comprehensive Testing](#comprehensive-testing) section below for full t
 
 ```bash
 # Build
-docker build -t duckling-id:latest .
+docker build -t duckling .
 
 # Run (foreground)
-docker run -p 8000:8000 duckling-id:latest
+docker run -p 8000:8000 duckling
 
 # Run (background)
-docker run -d -p 8000:8000 --name duckling duckling-id:latest
+docker run -d -p 8000:8000 --name duckling duckling
 
 # View logs
 docker logs -f duckling
@@ -92,7 +92,7 @@ docker start duckling
 docker rm duckling
 
 # Remove image
-docker rmi duckling-id:latest
+docker rmi duckling
 
 # List running containers
 docker ps
@@ -140,11 +140,11 @@ The Dockerfile uses BuildKit cache mounts which require BuildKit to be enabled:
 
 ```bash
 # Build with BuildKit (REQUIRED for cache mounts to work)
-DOCKER_BUILDKIT=1 docker build -t duckling-id:latest .
+DOCKER_BUILDKIT=1 docker build -t duckling .
 
 # Or enable BuildKit permanently:
 export DOCKER_BUILDKIT=1
-# Then just use: docker build -t duckling-id:latest .
+# Then just use: docker build -t duckling .
 ```
 
 **Build time expectations (with BuildKit):**
@@ -162,7 +162,7 @@ If port 8000 is already in use:
 
 ```bash
 # Use a different port (e.g., 8001)
-docker run -p 8001:8000 duckling-id:latest
+docker run -p 8001:8000 duckling
 
 # Then access at http://localhost:8001
 ```
@@ -183,7 +183,7 @@ curl -XPOST http://localhost:8000/parse \
 1. **Make code changes** (e.g., in `Duckling/Time/ID/Rules.hs`)
 2. **Rebuild Docker image:**
    ```bash
-   docker build -t duckling-id:latest .
+   docker build -t duckling .
    ```
 3. **Stop old container:**
    ```bash
@@ -192,7 +192,7 @@ curl -XPOST http://localhost:8000/parse \
    ```
 4. **Run new container:**
    ```bash
-   docker run -d -p 8000:8000 --name duckling duckling-id:latest
+   docker run -d -p 8000:8000 --name duckling duckling
    ```
 5. **Test your changes:**
    ```bash
