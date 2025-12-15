@@ -746,6 +746,58 @@ ruleTimePartOfDay = Rule
       _ -> Nothing
   }
 
+-- "<time> jam <hour>" seperti "besok siang jam 2", "kemarin malam jam 10"
+-- Combines a time expression (possibly with part-of-day) with an hour
+-- When the time has a part-of-day context, interprets hour in 12-hour format
+ruleTimeJamHour :: Rule
+ruleTimeJamHour = Rule
+  { name = "<time> jam <hour>"
+  , pattern =
+    [ dimension Time
+    , Predicate isATimeOfDay
+    ]
+  , prod = \tokens -> case tokens of
+      (Token Time td1:Token Time td2:_) -> do
+        -- Extract hour from td2
+        h <- case TTime.form td2 of
+          Just (TTime.TimeOfDay (Just hourVal) _) -> Just hourVal
+          _ -> Nothing
+        -- Check if td1 has a part-of-day context by examining the predicate structure
+        -- Even if form is not PartOfDay, we can detect part-of-day intervals from the predicate
+        let extractStartHour pred = case pred of
+              TTime.IntersectPredicate p1 p2 ->
+                case extractStartHour p1 of
+                  Just h -> Just h
+                  Nothing -> extractStartHour p2
+              TTime.TimeIntervalsPredicate
+                _ TTime.TimeDatePredicate{TTime.tdHour = Just (False, start)} _ -> Just start
+              _ -> Nothing
+        let startHour = extractStartHour (TTime.timePred td1)
+        -- If we found a start hour >= 12, it's afternoon/evening/night
+        -- Convert 1-11 to PM (13-23), keep 12 as noon
+        let h' = case startHour of
+              Just start | start >= 12 ->
+                -- Afternoon/evening/night context
+                if h >= 1 && h <= 11
+                  then h + 12  -- PM
+                  else if h == 12
+                  then 12  -- Keep 12 as noon
+                  else h
+              _ ->
+                -- No afternoon context or can't determine, use hour as-is
+                -- But if hour is 1-11 and we have PartOfDay form, assume PM
+                case TTime.form td1 of
+                  Just TTime.PartOfDay ->
+                    if h >= 1 && h <= 11
+                      then h + 12  -- Assume PM for part-of-day
+                      else h
+                  _ -> h  -- No part-of-day context, use hour as-is (24-hour format)
+        -- Intersect the time with the adjusted hour
+        let hourTd = hour True h'
+        Token Time <$> intersect td1 hourTd
+      _ -> Nothing
+  }
+
 -- "tadi malam" (last night)
 ruleTadiMalam :: Rule
 ruleTadiMalam = Rule
@@ -927,6 +979,7 @@ rules =
   , ruleJamHHPartOfDay
   , rulePartOfDays
   , ruleTimePartOfDay
+  , ruleTimeJamHour
   , ruleTadiMalam
   , ruleDalamDuration
   , ruleDurationKemudian
