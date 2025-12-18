@@ -163,6 +163,16 @@ allExamples = concat
              [ "jam 2 sore"
              , "pukul 2 sore"
              ]
+  , examples (datetime (2013, 2, 12, 22, 0, 0) Hour)
+             [ "jam 10 malam"
+             , "pukul 10 malam"
+             ]
+  , examples (datetime (2013, 2, 12, 15, 0, 0) Hour)
+             [ "pukul 3 siang"
+             ]
+  , examples (datetime (2013, 2, 12, 9, 0, 0) Hour)
+             [ "jam 9 pagi"
+             ]
   
   -- Relative cycles
   , examples (datetime (2013, 2, 19, 0, 0, 0) Day)
@@ -176,6 +186,133 @@ allExamples = concat
              ]
   , examples (datetime (2013, 1, 1, 0, 0, 0) Day)
              [ "bulan lalu"
+             ]
+  , examples (datetime (2014, 1, 1, 0, 0, 0) Day)
+             [ "tahun depan"
+             ]
+  , examples (datetime (2012, 1, 1, 0, 0, 0) Day)
+             [ "tahun lalu"
+             ]
+  
+  -- Relative dates with numbers
+  , examples (datetime (2013, 2, 14, 0, 0, 0) Day)
+             [ "2 hari lagi"
+             ]
+  , examples (datetime (2013, 2, 9, 0, 0, 0) Day)
+             [ "3 hari lalu"
+             ]
+  , examples (datetime (2013, 2, 5, 0, 0, 0) Day)
+             [ "7 hari lalu"
+             ]
+  , examples (datetime (2013, 1, 29, 0, 0, 0) Day)
+             [ "2 minggu lalu"
+             ]
+  , examples (datetime (2013, 1, 22, 0, 0, 0) Day)
+             [ "3 minggu lalu"
+             ]
+  , examples (datetime (2013, 1, 12, 0, 0, 0) Day)
+             [ "1 bulan lalu"
+             ]
+  , examples (datetime (2012, 12, 12, 0, 0, 0) Day)
+             [ "2 bulan lalu"
+             ]
+  
+  -- Part of day
+  , examples (datetimeInterval ((2013, 2, 12, 0, 0, 0), (2013, 2, 12, 12, 0, 0)) Hour)
+             [ "pagi"
+             ]
+  , examples (datetimeInterval ((2013, 2, 12, 12, 0, 0), (2013, 2, 12, 15, 0, 0)) Hour)
+             [ "siang"
+             ]
+  , examples (datetimeInterval ((2013, 2, 12, 15, 0, 0), (2013, 2, 12, 18, 0, 0)) Hour)
+             [ "sore"
+             ]
+  , examples (datetimeInterval ((2013, 2, 12, 18, 0, 0), (2013, 2, 13, 0, 0, 0)) Hour)
+             [ "malam"
+             ]
+  
+  -- Date + time combinations
+  , examples (datetime (2013, 2, 13, 6, 0, 0) Hour)
+             [ "besok pagi"
+             ]
+  , examples (datetime (2013, 2, 13, 12, 0, 0) Hour)
+             [ "besok siang"
+             ]
+  , examples (datetime (2013, 2, 13, 15, 0, 0) Hour)
+             [ "besok sore"
+             ]
+  , examples (datetime (2013, 2, 13, 18, 0, 0) Hour)
+             [ "besok malam"
+             ]
+  , examples (datetime (2013, 2, 11, 6, 0, 0) Hour)
+             [ "kemarin pagi"
+             ]
+  , examples (datetime (2013, 2, 11, 18, 0, 0) Hour)
+             [ "kemarin malam"
+             , "tadi malam"
+             ]
+  , examples (datetime (2013, 2, 12, 3, 0, 0) Hour)
+             [ "hari ini jam 3"
+             ]
+  , examples (datetime (2013, 2, 13, 14, 30, 0) Minute)
+             [ "besok jam 14:30"
+             ]
+  , examples (datetime (2013, 2, 11, 10, 0, 0) Hour)
+             [ "kemarin pukul 10 pagi"
+             ]
+  , examples (datetime (2013, 12, 13, 15, 0, 0) Hour)
+             [ "13 desember jam 15:00"
+             ]
+  , examples (datetime (2013, 2, 13, 14, 0, 0) Hour)
+             [ "besok sore jam 2"
+             ]
+  
+  -- Additional date formats
+  , examples (datetime (2013, 12, 13, 0, 0, 0) Day)
+             [ "13 desember"
+             ]
+  , examples (datetime (2025, 2, 14, 0, 0, 0) Day)
+             [ "14 februari 2025"
+             ]
+  , examples (datetime (2024, 1, 1, 0, 0, 0) Day)
+             [ "1 jan 2024"
+             ]
+  , examples (datetime (2025, 12, 25, 0, 0, 0) Day)
+             [ "25 desember 2025"
+             ]
+  , examples (datetime (2025, 11, 12, 0, 0, 0) Day)
+             [ "2025-11-12"
+             ]
+  , examples (datetime (2025, 11, 12, 0, 0, 0) Day)
+             [ "20251112"
+             ]
+  , examples (datetime (2024, 12, 25, 0, 0, 0) Day)
+             [ "25/12/2024"
+             ]
+  , examples (datetime (2013, 12, 25, 0, 0, 0) Day)
+             [ "25/12"
+             ]
+  , examples (datetime (2025, 1, 12, 0, 0, 0) Day)
+             [ "12 Jan 2025"
+             ]
+  , examples (datetime (2025, 1, 1, 0, 0, 0) Day)
+             [ "Jan 2025"
+             ]
+  , examples (datetime (2025, 1, 15, 0, 0, 0) Day)
+             [ "15/01/2025"
+             , "15-01-2025"
+             , "15.01.2025"
+             ]
+  
+  -- Interval expressions
+  , examples (datetimeInterval ((2013, 1, 1, 0, 0, 0), (2013, 2, 1, 0, 0, 0)) Day)
+             [ "minggu ini"
+             ]
+  , examples (datetimeInterval ((2013, 2, 1, 0, 0, 0), (2013, 3, 1, 0, 0, 0)) Day)
+             [ "bulan ini"
+             ]
+  , examples (datetimeInterval ((2013, 1, 1, 0, 0, 0), (2013, 2, 1, 0, 0, 0)) Day)
+             [ "awal bulan"
              ]
   
   -- Holidays
@@ -232,6 +369,20 @@ allExamples = concat
              ]
   , examples (datetimeHoliday (2013, 12, 22, 0, 0, 0) Day "Hari Ibu")
              [ "hari ibu"
+             ]
+  
+  -- Date ranges: "X hari terakhir", "dalam X hari terakhir"
+  , examples (datetimeInterval ((2013, 2, 5, 0, 0, 0), (2013, 2, 12, 0, 0, 0)) Day)
+             [ "7 hari terakhir"
+             , "dalam 7 hari terakhir"
+             ]
+  , examples (datetimeInterval ((2013, 2, 10, 0, 0, 0), (2013, 2, 12, 0, 0, 0)) Day)
+             [ "2 hari terakhir"
+             , "dalam 2 hari terakhir"
+             ]
+  , examples (datetimeInterval ((2013, 1, 29, 0, 0, 0), (2013, 2, 12, 0, 0, 0)) Day)
+             [ "14 hari terakhir"
+             , "dalam 14 hari terakhir"
              ]
   ]
 
